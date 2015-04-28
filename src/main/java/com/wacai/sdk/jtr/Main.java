@@ -30,7 +30,9 @@ public final class Main {
 
     public static void main(String[] args) throws Exception {
         if (args.length > 0 && args.length != 2) {
-            throw new IllegalArgumentException("Arguments should be : <template-dir> <json-dir>");
+            System.err.println("Arguments  : <template-dir> <json-dir>");
+            System.err.println("Properties : -Dserver.port=8080 -Dcontext.descriptor=testweb.xml");
+            System.exit(1);
         }
 
         final File templateDir = getDir(args, 0, "./");
