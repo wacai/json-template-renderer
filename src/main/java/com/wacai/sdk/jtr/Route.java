@@ -3,44 +3,40 @@ package com.wacai.sdk.jtr;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 class Route {
-    private final Map<String, ContextHandler> contexts;
-    private final ContextHandler defaultContext;
+    private final Collection<ContextHandler> contexts;
+    private final String                     resourceBase;
 
-    public Route(ContextHandler defaultContext) {
-        this.defaultContext = defaultContext;
-        contexts = new HashMap<>();
+    public Route(String resourceBase) {
+        this.resourceBase = resourceBase;
+        contexts = new ArrayList<>();
     }
 
-    public Route register(String suffix, ContextHandler context) {
-        contexts.put(suffix, context);
+    public Route register(ContextHandler context) {
+        contexts.add(context);
         return this;
     }
 
     public Handler asHandler() {
-        final Map<String, String> suffix2path = new HashMap<>();
+        final Collection<String> suffix = new ArrayList<>();
 
-        for (String k : contexts.keySet()) {
-            suffix2path.put(k, contexts.get(k).getContextPath());
+        for (ContextHandler c : contexts) {
+            suffix.add(c.getContextPath());
         }
 
         final ContextHandlerCollection coll = new ContextHandlerCollection();
 
-        coll.addHandler(dispatcher(suffix2path));
-        coll.addHandler(defaultContext);
-        for (ContextHandler ctx : contexts.values()) coll.addHandler(ctx);
+        coll.addHandler(dispatcher(suffix));
+        for (ContextHandler ctx : contexts) coll.addHandler(ctx);
         return coll;
     }
 
-    private ServletContextHandler dispatcher(Map<String, String> reg2path) {
-        final ServletContextHandler context = new ServletContextHandler(null, "/", false, false);
-        context.addServlet(new ServletHolder(new DispatchServlet(reg2path, defaultContext.getContextPath())), "/");
+    private ContextHandler dispatcher(Collection<String> suffix) {
+        final ContextHandler context = new ContextHandler("/");
+        context.setHandler(new Dispatch(suffix, resourceBase));
         return context;
     }
 }

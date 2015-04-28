@@ -8,16 +8,15 @@ import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public final class Main {
 
@@ -48,8 +47,8 @@ public final class Main {
     }
 
     public Handler handler(File templateDir, File jsonDir, String descriptor) throws Exception {
-        final Route route = new Route(resource("/s/", templateDir));
-        route.register(".jsp", jsp("/j/", templateDir, descriptor));
+        final Route route = new Route(templateDir.getAbsolutePath());
+        injectModel("/jsp", templateDir, jsonDir, descriptor, route);
         return route.asHandler();
     }
 
@@ -61,26 +60,22 @@ public final class Main {
         context.setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
         context.addBean(new ServletContainerInitializersStarter(context), true);
         context.setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
+        context.setClassLoader(new URLClassLoader(new URL[0], getClass().getClassLoader()));
         return context;
     }
 
-    ContextHandler resource(String ctx, File templateDir) {
-        final ContextHandler context = new ContextHandler(ctx);
-
-        final ResourceHandler handler = new ResourceHandler();
-        handler.setResourceBase(templateDir.getAbsolutePath());
-        handler.setDirectoriesListed(true);
-
-        context.setHandler(handler);
-        return context;
+    void injectModel(String ctx, File templateDir, File jsonDir, String descriptor, Route route) {
+        final String jspContextPath = "/jsp/r/";
+        final ServletContextHandler context = new ServletContextHandler(null, ctx, false, false);
+        context.addServlet(new ServletHolder(new InjectModelServlet(jsonDir, jspContextPath)), "/");
+        route.register(context);
+        route.register(jsp(jspContextPath, templateDir, descriptor));
     }
 
     private static List<ContainerInitializer> jspInitializers() {
         JettyJasperInitializer sci = new JettyJasperInitializer();
         ContainerInitializer initializer = new ContainerInitializer(sci, null);
-        List<ContainerInitializer> initializers = new ArrayList<ContainerInitializer>();
-        initializers.add(initializer);
-        return initializers;
+        return Collections.singletonList(initializer);
     }
 
 
