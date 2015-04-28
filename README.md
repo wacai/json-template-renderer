@@ -14,5 +14,5 @@ java -jar target/jtr-0.0.1-SNAPSHOT.jar
 ## More help
 
 ```
-java -jar jtr-x.x.x.jar help
+java -jar target/jtr-0.0.1-SNAPSHOT.jar help
 ```
