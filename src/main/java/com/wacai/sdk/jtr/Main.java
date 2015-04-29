@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.JarResource;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.File;
@@ -21,7 +22,6 @@ public final class Main {
 
     static final String INCLUDE_JAR_PATTERN = "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern";
     static final String JSP_PATTERN         = ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$";
-    static final String DEFAULT_DESC        = "com/wacai/sdk/jtr/web.xml";
 
     static {
         System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
@@ -37,7 +37,7 @@ public final class Main {
         final File templateDir = getDir(args, 0, "./");
         final File jsonDir = getDir(args, 1, "./");
         final int port = Integer.getInteger(Props.SERVER_PORT, 8080);
-        final String descriptor = System.getProperty(Props.CONTEXT_DESCRIPTOR, DEFAULT_DESC);
+        final String descriptor = System.getProperty(Props.CONTEXT_DESCRIPTOR);
 
         final Server server = new Server(port);
 
@@ -62,12 +62,13 @@ public final class Main {
             }
         }
         final WebAppContext context = new WebAppContext(templateDir.getAbsolutePath(), ctx);
-        context.setDescriptor(descriptor);
-
         final URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
+
         if (url != null) {
             // tld could be scanned under the META-INF/ after add shade jar
-            context.getMetaData().addWebInfJar(JarResource.newResource(url));
+            context.getMetaData().addWebInfJar(Resource.newResource(url));
+            descriptor = descriptor == null ? "jar:" + url + "!/empty-web.xml" : descriptor;
+            context.setDescriptor(descriptor);
         }
         context.setAttribute(INCLUDE_JAR_PATTERN, JSP_PATTERN);
         context.setAttribute("javax.servlet.context.tempdir", scratchDir);
