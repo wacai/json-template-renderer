@@ -45,6 +45,8 @@
                         <argument>-classpath</argument>
                         <classpath />
                         <argument>com.wacai.sdk.jtr.Main</argument>
+                        <argument>src/test/resources/webapp</argument>
+                        <argument>src/test/resources/models</argument>
                     </arguments>
                 </configuration>
             </plugin>

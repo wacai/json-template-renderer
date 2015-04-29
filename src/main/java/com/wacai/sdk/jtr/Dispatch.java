@@ -23,16 +23,23 @@ public class Dispatch extends ResourceHandler {
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         final String path = path(target);
         if (!paths.contains(path)) {
-            super.handle(target, baseRequest, request, response);
+            super.handle(target, baseRequest, request, allowCrossOrigin(response));
         } else {
-            baseRequest.getContext().getContext(path).getRequestDispatcher(target).forward(request, response);
+            baseRequest.getContext().getContext(path).getRequestDispatcher(target).forward(request, allowCrossOrigin(response));
         }
     }
 
-    private String path(String target) {
+    static String path(String target) {
         final StringBuilder sb = new StringBuilder(target);
         final int index = sb.lastIndexOf(".");
         if (index < 0) return null;
         return sb.substring(index).replace('.', '/');
     }
+
+    static HttpServletResponse allowCrossOrigin(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","GET, OPTIONS");
+        return response;
+    }
+
 }
