@@ -127,8 +127,6 @@
             <version>1.2.4</version>
         </dependency>
 
-
-
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
