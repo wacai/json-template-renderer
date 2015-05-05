@@ -6,6 +6,7 @@ import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
@@ -29,7 +30,7 @@ public final class Main {
     public static void main(String[] args) throws Exception {
         if (args.length > 0 && args.length != 2) {
             System.err.println("Arguments  : <template-dir> <json-dir>");
-            System.err.println("Properties : -Dserver.port=8080 -Dcontext.descriptor=/path/to/web.xml");
+            System.err.println("Properties : \n  -Dserver.port=8080 \n  -Dcontext.descriptor=/path/to/web.xml\n  -Dsuffix.mapping=/path/to/file");
             System.exit(1);
         }
 
@@ -37,10 +38,14 @@ public final class Main {
         final File jsonDir = getDir(args, 1, "./");
         final int port = Integer.getInteger(Props.SERVER_PORT, 8080);
         final String descriptor = System.getProperty(Props.CONTEXT_DESCRIPTOR);
+        final String suffixMappingFile = System.getProperty(Props.SUFFIX_MAPPING);
 
         final Server server = new Server(port);
 
-        server.setHandler(new Main().handler(templateDir, jsonDir, descriptor));
+        final Handler handler = new Main().handler(templateDir, jsonDir, descriptor);
+
+
+        server.setHandler(suffixMappingFile == null ? handler : wrapSuffixMapper(handler, new File(suffixMappingFile)));
 
         server.start();
         server.join();
@@ -85,6 +90,12 @@ public final class Main {
         route.register(jsp(jspContextPath, templateDir, descriptor));
     }
 
+    static Handler wrapSuffixMapper(Handler handler, File file) {
+        final HandlerWrapper wrapper = new SuffixMapping(file);
+        wrapper.setHandler(handler);
+        return wrapper;
+    }
+
     static List<ContainerInitializer> jspInitializers() {
         JettyJasperInitializer sci = new JettyJasperInitializer();
         ContainerInitializer initializer = new ContainerInitializer(sci, null);
@@ -100,6 +111,7 @@ public final class Main {
     interface Props {
         String SERVER_PORT        = "server.port";
         String CONTEXT_DESCRIPTOR = "context.descriptor";
+        String SUFFIX_MAPPING     = "suffix.mapping";
 
     }
 

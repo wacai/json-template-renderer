@@ -21,19 +21,12 @@ public class Dispatch extends ResourceHandler {
 
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        final String path = path(suffix(target));
+        final String path = path(RequestPath.suffix(target));
         if (!paths.contains(path)) {
             super.handle(target, baseRequest, request, allowCrossOrigin(response));
         } else {
             baseRequest.getContext().getContext(path).getRequestDispatcher(target).forward(request, allowCrossOrigin(response));
         }
-    }
-
-    static String suffix(String target) {
-        final StringBuilder sb = new StringBuilder(target);
-        final int index = sb.lastIndexOf(".");
-        if (index < 0) return null;
-        return  sb.substring(index);
     }
 
     static String path(String suffix) {
