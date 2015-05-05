@@ -4,7 +4,7 @@
 git clone git@github.com:wacai/json-template-renderer.git
 cd json-template-renderer
 mvn clean package
-java -jar target/jtr-*.jar src/test/resources/webapp src/test/resources/models
+java -Dsuffix.mapping=suffix.mapping -jar target/jtr-*.jar src/test/resources/webapp src/test/resources/models
 ```
 
 1. Open <http://localhost:8080>
@@ -20,6 +20,19 @@ java -jar target/jtr-*.jar src/test/resources/webapp src/test/resources/models
 [jstl]:http://www.oracle.com/technetwork/java/index-jsp-135995.html
 [vm]:http://velocity.apache.org/
 [ftl]:http://freemarker.org/
+
+## Change Suffix Mapping
+
+Edit file `suffix.mapping` like:
+
+```
+.action .jsp
+```
+
+> mapping `xxx.action` to `xxx.jsp`
+
+Then, restart it.
+
 
 ## More help
 
