@@ -3,7 +3,7 @@
     <title>Home</title>
 </head>
 <body>
-<h1>Hello world! This is a JSP.</h1>
+<h1>你好! This is a Velocity.</h1>
 
 <P>The time on the server is $serverTime.</P>
 
