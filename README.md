@@ -33,6 +33,14 @@ Edit file `suffix.mapping` like:
 
 Then, restart it.
 
+## Choose other model
+
+The name of model file would be some of template as default, like `home.jsp` with `home.json`.
+
+Sometimes one template may rendered by multiple model files.
+Please use query param to choose which model file should be rendered with template, for example:
+
+<http://localhost:8080/home.jsp?m=other>
 
 ## More help
 
