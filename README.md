@@ -13,7 +13,7 @@ java -Dsuffix.mapping=suffix.mapping -jar target/jtr-*.jar src/test/resources/we
 ## Template Supported List
 
 * [x] [Java Server Pages][jsp] ([JSP Standard Tag Library][jstl])
-* [ ] [Velocity][vm]
+* [x] [Velocity][vm]
 * [ ] [FreeMarker][ftl]
 
 [jsp]:http://www.oracle.com/technetwork/java/jsp-138432.html
