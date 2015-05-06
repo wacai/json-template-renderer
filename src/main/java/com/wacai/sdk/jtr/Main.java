@@ -42,8 +42,7 @@ public final class Main {
 
         final Server server = new Server(port);
 
-        final Handler handler = new Main().handler(templateDir, jsonDir, descriptor);
-
+        final Handler handler = new Main().handler(templateDir, descriptor,  new JsonModel(jsonDir));
 
         server.setHandler(suffixMappingFile == null ? handler : wrapSuffixMapper(handler, new File(suffixMappingFile)));
 
@@ -51,9 +50,14 @@ public final class Main {
         server.join();
     }
 
-    Handler handler(File templateDir, File jsonDir, String descriptor) throws Exception {
+    Handler handler(File templateDir, String descriptor, JsonModel jsonModel) throws Exception {
         final Route route = new Route(templateDir.getAbsolutePath());
-        injectModel("/jsp", templateDir, jsonDir, descriptor, route);
+        injectModel("/jsp", templateDir, descriptor, route, jsonModel);
+
+        final ContextHandler context = new ContextHandler( "/vm");
+        context.setHandler(new VelocityHandler(jsonModel, templateDir));
+        route.register(context);
+
         return route.asHandler();
     }
 
@@ -82,10 +86,11 @@ public final class Main {
         return context;
     }
 
-    void injectModel(String ctx, File templateDir, File jsonDir, String descriptor, Route route) {
+    void injectModel(String ctx, File templateDir, String descriptor, Route route, JsonModel jsonModel) {
         final String jspContextPath = "/jsp/r/";
         final ServletContextHandler context = new ServletContextHandler(null, ctx, false, false);
-        context.addServlet(new ServletHolder(new InjectModelServlet(jsonDir, jspContextPath)), "/");
+
+        context.addServlet(new ServletHolder(new JSPServlet(jspContextPath, jsonModel)), "/");
         route.register(context);
         route.register(jsp(jspContextPath, templateDir, descriptor));
     }

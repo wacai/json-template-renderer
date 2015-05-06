@@ -2,12 +2,11 @@ package com.wacai.sdk.jtr;
 
 import org.junit.Test;
 
-import static com.wacai.sdk.jtr.InjectModelServlet.base;
-import static com.wacai.sdk.jtr.InjectModelServlet.get;
+import static com.wacai.sdk.jtr.RequestPath.base;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
-public class InjectModelServletTest {
+public class JSPServletTest {
     @Test
     public void should_get_base_name() throws Exception {
         assertThat(base("/a.jsp"), is("/a"));
@@ -16,8 +15,8 @@ public class InjectModelServletTest {
 
     @Test
     public void should_get_query_value_by_key() throws Exception {
-        assertThat(get("m=a","m", "b"), is("a"));
-        assertThat(get("m=a&","m", "b"), is("a"));
-        assertThat(get("","m", "b"), is("b"));
+        assertThat(JsonModel.get("m=a", "m", "b"), is("a"));
+        assertThat(JsonModel.get("m=a&", "m", "b"), is("a"));
+        assertThat(JsonModel.get("", "m", "b"), is("b"));
     }
 }

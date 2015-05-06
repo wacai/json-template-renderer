@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class SuffixMapping extends HandlerWrapper {
 
-    private final File file;
+    private final File                file;
     private final Map<String, String> map;
 
     public SuffixMapping(File file) {
@@ -35,7 +35,7 @@ public class SuffixMapping extends HandlerWrapper {
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         final String suffix = RequestPath.suffix(target);
-        if (suffix == null || !map.containsKey(suffix))
+        if (!map.containsKey(suffix))
             super.handle(target, baseRequest, request, response);
         else {
             final String mapped = map.get(suffix);
