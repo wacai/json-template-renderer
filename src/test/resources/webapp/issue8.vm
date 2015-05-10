@@ -1,0 +1,3 @@
+#set( $param = "This is the Param String" )
+
+Test template of issue #8.

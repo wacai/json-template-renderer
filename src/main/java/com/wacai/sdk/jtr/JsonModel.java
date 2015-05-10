@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class JsonModel implements Serializable {
         final File file = new File(jsonDir, name + ".json");
         if (!file.exists()) {
             logger.warn("Missing model file {}", file);
-            return Collections.emptyMap();
+            return new HashMap<>();
         }
 
         try (JSONReader reader = new JSONReader(new FileReader(file))) {
