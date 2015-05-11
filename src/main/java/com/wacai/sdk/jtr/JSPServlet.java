@@ -29,7 +29,7 @@ public class JSPServlet extends HttpServlet {
 
     private void doRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String path = req.getServletPath();
-        final Map<String, String> model = jsonModel.load(path, req.getQueryString());
+        final Map<String, Object> model = jsonModel.load(path, req.getQueryString());
         for (String key : model.keySet()) {
             req.setAttribute(key, model.get(key));
         }

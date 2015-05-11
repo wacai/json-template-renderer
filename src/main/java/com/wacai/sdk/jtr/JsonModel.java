@@ -18,7 +18,7 @@ public class JsonModel implements Serializable {
     public JsonModel(File jsonDir) { this.jsonDir = jsonDir;}
 
     @SuppressWarnings("unchecked")
-    public Map<String, String> load(String path, String queryString) throws FileNotFoundException {
+    public Map<String, Object> load(String path, String queryString) throws FileNotFoundException {
         String name = get(queryString, "m", RequestPath.base(path));
         final File file = new File(jsonDir, name + ".json");
         if (!file.exists()) {
@@ -27,7 +27,7 @@ public class JsonModel implements Serializable {
         }
 
         try (JSONReader reader = new JSONReader(new FileReader(file))) {
-            final Map<String, String> model = (Map<String, String>) reader.readObject(new HashMap<String, String>());
+            final Map<String, Object> model = (Map<String, Object>) reader.readObject(new HashMap<String, Object>());
             logger.info("Inject model {}", model);
             return model;
         }
