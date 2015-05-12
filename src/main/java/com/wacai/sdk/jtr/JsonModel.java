@@ -1,5 +1,6 @@
 package com.wacai.sdk.jtr;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,9 @@ public class JsonModel implements Serializable {
         }
 
         try (JSONReader reader = new JSONReader(new FileReader(file))) {
-            final Map<String, Object> model = (Map<String, Object>) reader.readObject(new HashMap<String, Object>());
-            logger.info("Inject model {}", model);
-            return model;
+            final JSONObject object = (JSONObject) reader.readObject();
+            logger.info("Inject model {}", object);
+            return object;
         }
     }
 
