@@ -1,11 +1,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
-    <title>Home</title>
+  <meta charset='utf-8' >
+  <title>Home</title>
 </head>
 <body>
-<h1>Hello world! This is a JSP.</h1>
+<h1>Hello world! This is a JSP. 了就好了</h1>
 
 <P>The time on the server is ${serverTime}.</P>
 
