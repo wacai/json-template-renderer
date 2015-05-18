@@ -4,7 +4,7 @@
 git clone git@github.com:wacai/json-template-renderer.git
 cd json-template-renderer
 mvn clean package
-java -Dsuffix.mapping=suffix.mapping -jar target/jtr-*.jar src/test/resources/webapp src/test/resources/models
+java -Durl.rem=url.rem -jar target/jtr-*.jar src/test/resources/webapp src/test/resources/models
 ```
 
 1. Open <http://localhost:8080>
@@ -21,17 +21,9 @@ java -Dsuffix.mapping=suffix.mapping -jar target/jtr-*.jar src/test/resources/we
 [vm]:http://velocity.apache.org/
 [ftl]:http://freemarker.org/
 
-## Change Suffix Mapping
+## URL Remapping
 
-Edit file `suffix.mapping` like:
-
-```
-.action .jsp
-```
-
-> mapping `xxx.action` to `xxx.jsp`
-
-Then, restart it.
+Please see [the unit tests](src/test/java/com/wacai/sdk/jtr/UrlRemappingTest.java).
 
 ## Choose other model
 

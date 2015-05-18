@@ -30,7 +30,7 @@ public final class Main {
     public static void main(String[] args) throws Exception {
         if (args.length > 0 && args.length != 2) {
             System.err.println("Arguments  : <template-dir> <json-dir>");
-            System.err.println("Properties : \n  -Dserver.port=8080 \n  -Dcontext.descriptor=/path/to/web.xml\n  -Dsuffix.mapping=/path/to/file");
+            System.err.println("Properties : \n  -Dserver.port=8080 \n  -Dcontext.descriptor=/path/to/web.xml\n  -Durl.rem=/path/to/file");
             System.exit(1);
         }
 
@@ -38,13 +38,13 @@ public final class Main {
         final File jsonDir = getDir(args, 1, "./");
         final int port = Integer.getInteger(Props.SERVER_PORT, 8080);
         final String descriptor = System.getProperty(Props.CONTEXT_DESCRIPTOR);
-        final String suffixMappingFile = System.getProperty(Props.SUFFIX_MAPPING);
+        final String urlRemappingFile = System.getProperty(Props.URL_MAPPING);
 
         final Server server = new Server(port);
 
         final Handler handler = new Main().handler(templateDir, descriptor,  new JsonModel(jsonDir));
 
-        server.setHandler(suffixMappingFile == null ? handler : wrapSuffixMapper(handler, new File(suffixMappingFile)));
+        server.setHandler(urlRemappingFile == null ? handler : wrapUrlMapping(handler, new File(urlRemappingFile)));
 
         server.start();
         server.join();
@@ -95,8 +95,8 @@ public final class Main {
         route.register(jsp(jspContextPath, templateDir, descriptor));
     }
 
-    static Handler wrapSuffixMapper(Handler handler, File file) {
-        final HandlerWrapper wrapper = new SuffixMapping(file);
+    static Handler wrapUrlMapping(Handler handler, File file) {
+        final HandlerWrapper wrapper = new UrlRemapping(file);
         wrapper.setHandler(handler);
         return wrapper;
     }
@@ -116,8 +116,7 @@ public final class Main {
     interface Props {
         String SERVER_PORT        = "server.port";
         String CONTEXT_DESCRIPTOR = "context.descriptor";
-        String SUFFIX_MAPPING     = "suffix.mapping";
-
+        String URL_MAPPING        = "url.rem";
     }
 
     Main() { }
