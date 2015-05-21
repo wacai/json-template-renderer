@@ -35,10 +35,11 @@ public class JsonModel implements Serializable {
     }
 
     static String get(String queryString, String key, String defaultValue) {
-        if (queryString == null) return defaultValue;
-        final int i = queryString.indexOf(key);
-        if (i < 0) return defaultValue;
-        final int j = queryString.indexOf('&', i);
-        return queryString.substring(i + key.length() + 1, j < 0 ? queryString.length() : j);
+        if (queryString == null || queryString.trim().isEmpty()) return defaultValue;
+        final String prefix = key + '=';
+        for (String s : queryString.split("&")) {
+            if (s.startsWith(prefix)) return s.substring(prefix.length());
+        }
+        return defaultValue;
     }
 }
