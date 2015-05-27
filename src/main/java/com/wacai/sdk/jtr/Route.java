@@ -1,13 +1,11 @@
 package com.wacai.sdk.jtr;
 
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Slf4jRequestLog;
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 class Route {
     private final Collection<ContextHandler> contexts;
@@ -32,17 +30,11 @@ class Route {
 
         final HandlerCollection coll = new HandlerCollection();
 
-        coll.addHandler(requestLog());
         coll.addHandler(dispatcher(suffix));
         for (ContextHandler ctx : contexts) coll.addHandler(ctx);
         return coll;
     }
 
-    private RequestLogHandler requestLog() {
-        RequestLogHandler requestLogHandler = new RequestLogHandler();
-        requestLogHandler.setRequestLog(new Slf4jRequestLog());
-        return requestLogHandler;
-    }
 
     private ContextHandler dispatcher(Collection<String> suffix) {
         final ContextHandler context = new ContextHandler("/");

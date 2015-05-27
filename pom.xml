@@ -42,7 +42,7 @@
                     <executable>java</executable>
                     <arguments>
                         <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argument>
-                        <argument>-Dsuffix.mapping=suffix.mapping</argument>
+                        <argument>-Durl.rem=url.rem</argument>
                         <argument>-classpath</argument>
                         <classpath />
                         <argument>com.wacai.sdk.jtr.Main</argument>

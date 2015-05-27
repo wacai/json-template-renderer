@@ -5,8 +5,10 @@ import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.Slf4jRequestLog;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
@@ -58,7 +60,14 @@ public final class Main {
         context.setHandler(new VelocityHandler(jsonModel, templateDir));
         route.register(context);
 
-        return route.asHandler();
+        return requestLog(route.asHandler());
+    }
+
+    private RequestLogHandler requestLog(Handler handler) {
+        RequestLogHandler requestLogHandler = new RequestLogHandler();
+        requestLogHandler.setRequestLog(new Slf4jRequestLog());
+        requestLogHandler.setHandler(handler);
+        return requestLogHandler;
     }
 
     ContextHandler jsp(String ctx, File templateDir, String descriptor) {
