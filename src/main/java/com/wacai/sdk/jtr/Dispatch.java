@@ -38,7 +38,7 @@ public class Dispatch extends ResourceHandler {
 
     static HttpServletResponse allowCrossOrigin(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+        response.setHeader("Access-Control-Allow-Methods", "*");
         return response;
     }
 
