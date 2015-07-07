@@ -1,5 +1,6 @@
 package com.wacai.sdk.jtr;
 
+import com.google.common.io.Files;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
@@ -17,6 +18,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,10 +44,12 @@ public final class Main {
         final int port = Integer.getInteger(Props.SERVER_PORT, 8080);
         final String descriptor = System.getProperty(Props.CONTEXT_DESCRIPTOR);
         final String urlRemappingFile = System.getProperty(Props.URL_MAPPING);
+        final String whitelistFile = System.getProperty(Props.WHITE_LIST, "white.list");
 
         final Server server = new Server(port);
 
-        final Handler handler = new Main().handler(templateDir, descriptor,  new JsonModel(jsonDir));
+        Collection<String> whitelist = Files.readLines(new File(whitelistFile), Charset.forName("UTF-8"));
+        final Handler handler = new Main().handler(templateDir, descriptor, new JsonModel(jsonDir), whitelist);
 
         server.setHandler(urlRemappingFile == null ? handler : wrapUrlMapping(handler, new File(urlRemappingFile)));
 
@@ -52,11 +57,11 @@ public final class Main {
         server.join();
     }
 
-    Handler handler(File templateDir, String descriptor, JsonModel jsonModel) throws Exception {
-        final Route route = new Route(templateDir.getAbsolutePath());
+    Handler handler(File templateDir, String descriptor, JsonModel jsonModel, Collection<String> whitelist) throws Exception {
+        final Route route = new Route(templateDir.getAbsolutePath(), whitelist);
         injectModel("/jsp", templateDir, descriptor, route, jsonModel);
 
-        final ContextHandler context = new ContextHandler( "/vm");
+        final ContextHandler context = new ContextHandler("/vm");
         context.setHandler(new VelocityHandler(jsonModel, templateDir));
         route.register(context);
 
@@ -126,6 +131,7 @@ public final class Main {
         String SERVER_PORT        = "server.port";
         String CONTEXT_DESCRIPTOR = "context.descriptor";
         String URL_MAPPING        = "url.rem";
+        String WHITE_LIST         = "white.list";
     }
 
     Main() { }

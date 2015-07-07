@@ -25,6 +25,10 @@ java -Durl.rem=url.rem -jar target/jtr-*.jar src/test/resources/webapp src/test/
 
 Please see [the unit tests](src/test/java/com/wacai/sdk/jtr/UrlRemappingTest.java).
 
+## Suffix White List
+
+Please see the [white.list](white.list), which contains accessible static resources suffix list.
+
 ## Choose other model
 
 The name of model file would be some of template as default, like `home.jsp` with `home.json`.

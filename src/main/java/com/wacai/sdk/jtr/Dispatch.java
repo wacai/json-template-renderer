@@ -13,17 +13,21 @@ import java.util.Collection;
 public class Dispatch extends ResourceHandler {
 
     private final Collection<String> paths;
+    private final Collection<String> whitelist;
 
-    public Dispatch(Collection<String> paths, String base) {
+    public Dispatch(Collection<String> paths, String base, Collection<String> whitelist) {
         this.paths = paths;
-        setDirectoriesListed(true);
+        this.whitelist = whitelist;
+        setDirectoriesListed(false);
         setResourceBase(base);
     }
 
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        final String path = path(RequestPath.suffix(target));
+        final String suffix = RequestPath.suffix(target);
+        final String path = path(suffix);
         if (!paths.contains(path)) {
+            if (!whitelist.contains(suffix)) return;
             if (!"GET".equals(baseRequest.getMethod()))
                 baseRequest.setMethod(HttpMethod.GET, HttpMethod.GET.toString());
             super.handle(target, baseRequest, request, allowCrossOrigin(response));

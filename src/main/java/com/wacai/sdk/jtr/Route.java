@@ -10,9 +10,11 @@ import java.util.Collection;
 class Route {
     private final Collection<ContextHandler> contexts;
     private final String                     resourceBase;
+    private final Collection<String>         whitelist;
 
-    public Route(String resourceBase) {
+    public Route(String resourceBase, Collection<String> whitelist) {
         this.resourceBase = resourceBase;
+        this.whitelist = whitelist;
         contexts = new ArrayList<>();
     }
 
@@ -38,7 +40,7 @@ class Route {
 
     private ContextHandler dispatcher(Collection<String> suffix) {
         final ContextHandler context = new ContextHandler("/");
-        context.setHandler(new Dispatch(suffix, resourceBase));
+        context.setHandler(new Dispatch(suffix, resourceBase, whitelist));
         return context;
     }
 }
