@@ -1,5 +1,6 @@
 package com.wacai.sdk.jtr;
 
+import com.google.common.io.Files;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
 
@@ -9,8 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -47,8 +46,7 @@ public class UrlRemapping extends HandlerWrapper {
     }
 
     void load() throws IOException {
-        final Path path = file.toPath();
-        final List<String> lines = Files.readAllLines(path, Charset.forName("UTF-8"));
+        final List<String> lines = Files.readLines(file, Charset.forName("UTF-8"));
         for (String line : lines) {
             final String[] split = line.split("\\s+", 2);
             substitutes.add(new Substitute(Pattern.compile(split[0]), split[1]));
