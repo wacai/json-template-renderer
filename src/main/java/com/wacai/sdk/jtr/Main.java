@@ -1,6 +1,5 @@
 package com.wacai.sdk.jtr;
 
-import com.google.common.io.Files;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
@@ -19,6 +18,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +48,7 @@ public final class Main {
 
         final Server server = new Server(port);
 
-        Collection<String> whitelist = Files.readLines(new File(whitelistFile), Charset.forName("UTF-8"));
+        Collection<String> whitelist = Files.readAllLines(new File(whitelistFile).toPath(), Charset.forName("UTF-8"));
         final Handler handler = new Main().handler(templateDir, descriptor, new JsonModel(jsonDir), whitelist);
 
         server.setHandler(urlRemappingFile == null ? handler : wrapUrlMapping(handler, new File(urlRemappingFile)));
