@@ -48,8 +48,11 @@ public class UrlRemapping extends HandlerWrapper {
     void load() throws IOException {
         final List<String> lines = Files.readAllLines(file.toPath(), Charset.forName("UTF-8"));
         for (String line : lines) {
-            final String[] split = line.split("\\s+", 2);
-            substitutes.add(new Substitute(Pattern.compile(split[0]), split[1]));
+            line = line.trim();
+            if (!line.isEmpty() && !line.startsWith("#")) {
+                final String[] split = line.split("\\s+", 2);
+                substitutes.add(new Substitute(Pattern.compile(split[0]), split[1]));
+            }
         }
     }
 
