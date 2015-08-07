@@ -29,6 +29,8 @@ Please see [the unit tests](src/test/java/com/wacai/sdk/jtr/UrlRemappingTest.jav
 
 Please see the [white.list](white.list), which contains accessible static resources suffix list.
 
+Using `-Dwhite.list=/path/to/white.list` to specify your customized white list.
+
 ## Choose other model
 
 The name of model file would be some of template as default, like `home.jsp` with `home.json`.
