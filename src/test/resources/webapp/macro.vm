@@ -1,0 +1,3 @@
+#macro( h )
+<h1>Head</h1>
+#end

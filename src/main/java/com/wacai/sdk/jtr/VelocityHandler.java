@@ -4,6 +4,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeInstance;
+import org.apache.velocity.tools.generic.RenderTool;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.util.StringUtil;
@@ -31,7 +32,13 @@ public class VelocityHandler extends AbstractHandler {
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         final String name = RequestPath.base(target);
         final VelocityContext context = new VelocityContext(jsonModel.load(name, baseRequest.getQueryString()));
-        final Template template = engine.getTemplate(target,StringUtil.__UTF8);
+
+        final RenderTool tool = new RenderTool();
+        tool.setVelocityContext(context);
+        tool.setVelocityEngine(engine);
+        context.put("render", tool);
+
+        final Template template = engine.getTemplate(target, StringUtil.__UTF8);
         response.setContentType("text/html");
         response.setCharacterEncoding(StringUtil.__UTF8);
         template.merge(context, response.getWriter());

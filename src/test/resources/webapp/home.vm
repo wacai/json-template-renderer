@@ -5,6 +5,12 @@
 <body>
 <h1>你好! This is a Velocity.</h1>
 
+#set($file = "macro.vm")
+
+#parse($file)
+
+$render.eval($ctx,"#h()")
+
 <P>The time on the server is $serverTime.</P>
 
 <p>Here are some items:</p>
